@@ -126,20 +126,22 @@ export class PhysicsSimulation extends gfx.GfxApp
 
     update(deltaTime: number): void 
     {
+        const reflectionSpeed = 40;
+
         this.cameraControls.update(deltaTime);
 
         this.obstacle.position.x += this.obstacleVelocity.x * deltaTime;
         this.obstacle.position.y += this.obstacleVelocity.y * deltaTime;
         this.obstacle.position.z += this.obstacleVelocity.z * deltaTime;
 
-        if(this.obstacle.position.x - this.obstacle.width < this.room.boundingBox.min.x)
+        if(this.obstacle.position.x - this.obstacle.width/2 < this.room.boundingBox.min.x)
         {
-            this.obstacle.position.x = this.room.boundingBox.min.x + this.obstacle.width;
+            this.obstacle.position.x = this.room.boundingBox.min.x + this.obstacle.width/2;
             this.obstacleVelocity.x *= -1;
         }
-        else if(this.obstacle.position.x + this.obstacle.width > this.room.boundingBox.max.x)
+        else if(this.obstacle.position.x + this.obstacle.width/2 > this.room.boundingBox.max.x)
         {
-            this.obstacle.position.x = this.room.boundingBox.max.x - this.obstacle.width;
+            this.obstacle.position.x = this.room.boundingBox.max.x - this.obstacle.width/2;
             this.obstacleVelocity.x *= -1;
         }
 
@@ -155,6 +157,14 @@ export class PhysicsSimulation extends gfx.GfxApp
         this.projectile.position.y += this.projectileVelocity.y * deltaTime;
         this.projectile.position.z += this.projectileVelocity.z * deltaTime;
     
+        if(this.projectile.intersects(this.obstacle, gfx.IntersectionMode3.AXIS_ALIGNED_BOUNDING_BOX))
+        {
+            const cameraVector = gfx.Vector3.subtract(this.camera.position, this.projectile.position);
+            cameraVector.normalize();
+            cameraVector.multiplyScalar(reflectionSpeed);
+            this.projectileVelocity.add(cameraVector);
+        }
+
         // Handle collision
         if(this.projectile.position.z - this.projectile.radius < this.room.boundingBox.min.z)
         {

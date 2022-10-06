@@ -1,6 +1,6 @@
 # Lecture 10: 3D Graphics Programming (Part 2)
 
-Detailed explanation of this code can be found in the lecture video.
+Detailed explanation of this code can be found in the [lecture video](https://mediaspace.umn.edu/media/t/1_y4yctcii).
 
 You can run the program on [GitHub pages](https://csci-4611-fall-2022.github.io/Lecture-10).
 
@@ -30,6 +30,10 @@ npm run start
 ```
 
 Webpack should launch your program in a web browser automatically.  If not, you can run it by pointing your browser at `http://localhost:8080`.
+
+## Acknowledgments
+
+The beep sound effect was obtained from [ZapSplat](https://www.zapsplat.com/).
 
 ## License
 
