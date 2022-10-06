@@ -109,7 +109,7 @@ export class PhysicsSimulation extends gfx.GfxApp
         this.projectile.position.z += this.projectileVelocity.z * deltaTime;
     
         // Handle collision
-        if(this.projectile.position.z < this.room.boundingBox.min.z)
+        if(!this.projectile.intersects(this.room, gfx.IntersectionMode3.AXIS_ALIGNED_BOUNDING_BOX))
         {
             this.projectileVelocity.set(0, 0, 0);
             this.projectile.position.z = this.room.boundingBox.max.z + 1;
