@@ -138,7 +138,16 @@ export class PhysicsSimulation extends gfx.GfxApp
 
             if(actualDistance < maxDistance)
             {
-                this.points++;
+                if(actualDistance < 1)
+                    this.points += 5;
+                else if(actualDistance < 2)
+                    this.points += 4;
+                else if(actualDistance < 3)
+                    this.points += 3;
+                else if(actualDistance < 4)
+                    this.points += 2;
+                else
+                    this.points++;
 
                 this.pointsTexture.text = this.points.toString();
                 this.pointsTexture.updateTextureImage();
