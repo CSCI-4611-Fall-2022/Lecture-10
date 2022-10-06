@@ -45,7 +45,7 @@ export class PhysicsSimulation extends gfx.GfxApp
         this.projectileVelocity = new gfx.Vector3();
 
         this.obstacle = new gfx.BoxMesh(8, 5, 0.1);
-        this.obstacleVelocity = new gfx.Vector3();
+        this.obstacleVelocity = new gfx.Vector3(-10, 0, 0);
 
         this.hitSound = new Audio('./assets/beep.mp3');
     }
@@ -127,6 +127,21 @@ export class PhysicsSimulation extends gfx.GfxApp
     update(deltaTime: number): void 
     {
         this.cameraControls.update(deltaTime);
+
+        this.obstacle.position.x += this.obstacleVelocity.x * deltaTime;
+        this.obstacle.position.y += this.obstacleVelocity.y * deltaTime;
+        this.obstacle.position.z += this.obstacleVelocity.z * deltaTime;
+
+        if(this.obstacle.position.x - this.obstacle.width < this.room.boundingBox.min.x)
+        {
+            this.obstacle.position.x = this.room.boundingBox.min.x + this.obstacle.width;
+            this.obstacleVelocity.x *= -1;
+        }
+        else if(this.obstacle.position.x + this.obstacle.width > this.room.boundingBox.max.x)
+        {
+            this.obstacle.position.x = this.room.boundingBox.max.x - this.obstacle.width;
+            this.obstacleVelocity.x *= -1;
+        }
 
         if(this.projectileVelocity.length() == 0)
             return;
