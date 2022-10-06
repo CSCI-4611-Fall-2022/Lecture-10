@@ -14,6 +14,10 @@ export class PhysicsSimulation extends gfx.GfxApp
     private room: Room;
     private target: gfx.Transform3;
 
+    private points: number;
+    private pointsBox: gfx.BoxMesh;
+    private pointsTexture: gfx.Text;
+
     private projectile: gfx.SphereMesh;
     private projectileVelocity: gfx.Vector3;
 
@@ -26,6 +30,10 @@ export class PhysicsSimulation extends gfx.GfxApp
         super();
 
         this.cameraControls = new gfx.FirstPersonControls(this.camera);
+
+        this.points = 0;
+        this.pointsBox = new gfx.BoxMesh(4.9, 4.9, 0.1);
+        this.pointsTexture = new gfx.Text('0', 256, 256, '100px Helvetica', 'yellow', 'black');
         
         this.room = new Room(40, 15, 40);
         this.projectile = new gfx.SphereMesh(0.2, 2)
@@ -95,6 +103,13 @@ export class PhysicsSimulation extends gfx.GfxApp
 
         this.projectile.position.z = this.room.boundingBox.max.z + 1;
         this.scene.add(this.projectile);
+
+        const pointsBoxMaterial = new gfx.UnlitMaterial();
+        pointsBoxMaterial.texture = this.pointsTexture;
+
+        this.pointsBox.position.set(-12.5, 0, -20);
+        this.pointsBox.material = pointsBoxMaterial;
+        this.scene.add(this.pointsBox);
     }
 
     update(deltaTime: number): void 
@@ -123,6 +138,10 @@ export class PhysicsSimulation extends gfx.GfxApp
 
             if(actualDistance < maxDistance)
             {
+                this.points++;
+
+                this.pointsTexture.text = this.points.toString();
+                this.pointsTexture.updateTextureImage();
                 this.hitSound.play();
             }
 
