@@ -20,6 +20,9 @@ export class PhysicsSimulation extends gfx.GfxApp
 
     private projectile: gfx.SphereMesh;
     private projectileVelocity: gfx.Vector3;
+    
+    private obstacle: gfx.BoxMesh;
+    private obstacleVelocity: gfx.Vector3;
 
     private hitSound: HTMLAudioElement;
 
@@ -36,10 +39,13 @@ export class PhysicsSimulation extends gfx.GfxApp
         this.pointsTexture = new gfx.Text('0', 256, 256, '100px Helvetica', 'yellow', 'black');
         
         this.room = new Room(40, 15, 40);
-        this.projectile = new gfx.SphereMesh(0.2, 2)
         this.target = new gfx.Transform3();
 
+        this.projectile = new gfx.SphereMesh(0.2, 2);
         this.projectileVelocity = new gfx.Vector3();
+
+        this.obstacle = new gfx.BoxMesh(8, 5, 0.1);
+        this.obstacleVelocity = new gfx.Vector3();
 
         this.hitSound = new Audio('./assets/beep.mp3');
     }
@@ -110,6 +116,12 @@ export class PhysicsSimulation extends gfx.GfxApp
         this.pointsBox.position.set(-12.5, 0, -20);
         this.pointsBox.material = pointsBoxMaterial;
         this.scene.add(this.pointsBox);
+
+        const obstacleMaterial = new gfx.GouraudMaterial();
+        obstacleMaterial.ambientColor.set(0, 0.5, 0.5);
+        obstacleMaterial.diffuseColor.set(0, 0.5, 0.5);
+        this.obstacle.material = obstacleMaterial;
+        this.scene.add(this.obstacle);
     }
 
     update(deltaTime: number): void 
