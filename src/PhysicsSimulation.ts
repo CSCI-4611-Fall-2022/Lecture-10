@@ -17,6 +17,8 @@ export class PhysicsSimulation extends gfx.GfxApp
     private projectile: gfx.SphereMesh;
     private projectileVelocity: gfx.Vector3;
 
+    private hitSound: HTMLAudioElement;
+
     constructor()
     {
         // The first line of any child class constructor must call
@@ -30,6 +32,8 @@ export class PhysicsSimulation extends gfx.GfxApp
         this.target = new gfx.Transform3();
 
         this.projectileVelocity = new gfx.Vector3();
+
+        this.hitSound = new Audio('./assets/beep.mp3');
     }
 
     createScene(): void 
@@ -61,6 +65,7 @@ export class PhysicsSimulation extends gfx.GfxApp
             this.target.add(disc);
         }
         this.target.position.z = -19.5;
+        this.target.boundingSphere.radius = 5;
         this.scene.add(this.target);
 
         const whiteMaterial = new gfx.UnlitMaterial();
@@ -109,7 +114,22 @@ export class PhysicsSimulation extends gfx.GfxApp
         this.projectile.position.z += this.projectileVelocity.z * deltaTime;
     
         // Handle collision
-        if(!this.projectile.intersects(this.room, gfx.IntersectionMode3.AXIS_ALIGNED_BOUNDING_BOX))
+        if(this.projectile.position.z - this.projectile.radius < this.room.boundingBox.min.z)
+        {
+            this.projectile.position.z = this.target.position.z;
+
+            const actualDistance = this.projectile.position.distanceTo(this.target.position);
+            const maxDistance = this.projectile.boundingSphere.radius + this.target.boundingSphere.radius;
+
+            if(actualDistance < maxDistance)
+            {
+                this.hitSound.play();
+            }
+
+            this.projectileVelocity.set(0, 0, 0);
+            this.projectile.position.z = this.room.boundingBox.max.z + 1;
+        }
+        else if(!this.projectile.intersects(this.room, gfx.IntersectionMode3.AXIS_ALIGNED_BOUNDING_BOX))
         {
             this.projectileVelocity.set(0, 0, 0);
             this.projectile.position.z = this.room.boundingBox.max.z + 1;
